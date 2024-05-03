@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement", "ProjectManagement\ProjectManagement.csproj", "{4066AE90-0CAE-46E5-B0B6-045A43BD16D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement", "ProjectManagement\ProjectManagement.csproj", "{4066AE90-0CAE-46E5-B0B6-045A43BD16D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Data", "ProjectManagement.Data\ProjectManagement.Data.csproj", "{34CD3C58-7C57-46C8-A1C3-6B940F1E1169}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement.Data", "ProjectManagement.Data\ProjectManagement.Data.csproj", "{34CD3C58-7C57-46C8-A1C3-6B940F1E1169}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Model", "ProjectManagement.Model\ProjectManagement.Model.csproj", "{B593DEB5-20D2-4829-8E68-E65100051C55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement.Model", "ProjectManagement.Model\ProjectManagement.Model.csproj", "{B593DEB5-20D2-4829-8E68-E65100051C55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Business", "ProjectManagement.Business\ProjectManagement.Business.csproj", "{AB2938E7-4FF2-409B-990C-DD5B793130CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement.Business", "ProjectManagement.Business\ProjectManagement.Business.csproj", "{AB2938E7-4FF2-409B-990C-DD5B793130CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Core", "ProjectManagement.Core\ProjectManagement.Core.csproj", "{9A7AD3D0-9C03-4339-B0A7-199066CC6F56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AB2938E7-4FF2-409B-990C-DD5B793130CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB2938E7-4FF2-409B-990C-DD5B793130CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB2938E7-4FF2-409B-990C-DD5B793130CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A7AD3D0-9C03-4339-B0A7-199066CC6F56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A7AD3D0-9C03-4339-B0A7-199066CC6F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A7AD3D0-9C03-4339-B0A7-199066CC6F56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A7AD3D0-9C03-4339-B0A7-199066CC6F56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
