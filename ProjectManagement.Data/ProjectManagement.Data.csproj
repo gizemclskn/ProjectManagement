@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ProjectManagement.Core\ProjectManagement.Core.csproj" />
     <ProjectReference Include="..\ProjectManagement.Model\ProjectManagement.Model.csproj" />
   </ItemGroup>
 
