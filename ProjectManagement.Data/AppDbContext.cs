@@ -1,0 +1,23 @@
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectManangment.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProjectManagement.Data
+{
+    public class AppDbContext :DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options): base(options) 
+        { 
+        }  
+
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectNote> ProjectNotes { get; set; }
+        public DbSet<ProjectFile> ProjectFiles { get; set; }
+
+    }
+}
