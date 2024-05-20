@@ -1,114 +1,75 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using ProjectManagement.Core.UnitOfWorks;
 using ProjectManangment.Model;
+using ProjectManagement.Business;
 
 namespace ProjectManagement.Controllers
 {
-    public class ProjectsController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProjectsController : ControllerBase
     {
+        private readonly IProjectService _projectService;
 
-        private readonly IUnitOfWork _unitOfWork;
-
-        public ProjectsController(IUnitOfWork unitOfWork)
+        public ProjectsController(IProjectService projectService)
         {
-            _unitOfWork = unitOfWork;
+            _projectService = projectService;
         }
-        [HttpPost("list")]
-        public IActionResult ListProjects()
+
+        [HttpPost("all")]
+        public IActionResult GetAllProjects()
         {
-            var projects = _unitOfWork.Projects.GetAll();
+            var projects = _projectService.GetAllProjects();
             return Ok(projects);
         }
-        [HttpPost("detail")]
-        public async Task<IActionResult> GetProjectDetail()
+
+        [HttpPost("{id}")]
+        public IActionResult GetProject(int id)
         {
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                var data = JsonConvert.DeserializeObject<Dictionary<string, int>>(body);
+            var project = _projectService.GetProject(id);
+            if (project == null)
+                return NotFound();
 
-                if (data == null || !data.ContainsKey("ProjectId"))
-                    return BadRequest("Project ID is required.");
-
-                int projectId = data["ProjectId"];
-                var project = _unitOfWork.Projects.Get(projectId);
-
-                if (project == null)
-                    return NotFound();
-
-                return Ok(project);
-            }
+            return Ok(project);
         }
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateProject()
+
+        [HttpPost]
+        public IActionResult CreateProject(Project project)
         {
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                var project = JsonConvert.DeserializeObject<Project>(body);
-
-                if (project == null)
-                {
-                    return BadRequest("Invalid project data");
-                }
-
-                _unitOfWork.Projects.Add(project);
-                _unitOfWork.Complete();
-
-                return Created("", project);
-            }
+            _projectService.CreateProject(project);
+            return CreatedAtAction(nameof(GetProject), new { id = project.ProjectId }, project);
         }
-        [HttpPost("update")]
-        public async Task<IActionResult> UpdateProject()
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateProject(int id, Project project)
         {
-            using (var reader = new StreamReader(Request.Body))
+            if (id != project.ProjectId)
+                return BadRequest();
+
+            try
             {
-                var body = await reader.ReadToEndAsync();
-                var project = JsonConvert.DeserializeObject<Project>(body);
-
-                if (project == null || project.ProjectId == 0)
-                    return BadRequest("Invalid project data.");
-
-                var existingProject = _unitOfWork.Projects.Get(project.ProjectId);
-
-                if (existingProject == null)
-                    return NotFound();
-
-                // Güncelleme işlemi
-                existingProject.Name = project.Name;
-                existingProject.StartDate = project.StartDate;
-                existingProject.EndDate = project.EndDate;
-                existingProject.Status = project.Status;
-
-                _unitOfWork.Complete();
-
-                return NoContent();  // Başarıyla güncellendi
+                _projectService.UpdateProject(project);
             }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
-        [HttpPost("delete")]
-        public async Task<IActionResult> DeleteProject()
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteProject(int id)
         {
-            using (var reader = new StreamReader(Request.Body))
+            try
             {
-                var body = await reader.ReadToEndAsync();
-                var data = JsonConvert.DeserializeObject<Dictionary<string, int>>(body);
-
-                if (data == null || !data.ContainsKey("ProjectId"))
-                    return BadRequest("Project ID is required.");
-
-                int projectId = data["ProjectId"];
-                var project = _unitOfWork.Projects.Get(projectId);
-
-                if (project == null)
-                    return NotFound();
-
-                _unitOfWork.Projects.Remove(project);
-                _unitOfWork.Complete();
-
-                return NoContent();  // Başarıyla silindi
+                _projectService.DeleteProject(id);
             }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }
-

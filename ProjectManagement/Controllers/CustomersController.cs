@@ -1,125 +1,75 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using ProjectManagement.Core.UnitOfWorks;
 using ProjectManangment.Model;
+using ProjectManagement.Business;
 
 namespace ProjectManagement.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CustomersController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICustomerService _customerService;
 
-        public CustomersController(IUnitOfWork unitOfWork)
+        public CustomersController(ICustomerService customerService)
         {
-            _unitOfWork = unitOfWork;
+            _customerService = customerService;
         }
-        [HttpPost("list")]
-        public IActionResult ListCustomers()
+
+        [HttpPost("all")]
+        public IActionResult GetAllCustomers()
         {
-            var customers = _unitOfWork.Customers.GetAll();
+            var customers = _customerService.GetAllCustomers();
             return Ok(customers);
         }
-        [HttpPost("detail")]
-        public async Task<IActionResult> GetCustomerDetail()
+
+        [HttpPost("{id}")]
+        public IActionResult GetCustomer(int id)
         {
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                var data = JsonConvert.DeserializeObject<Dictionary<string, int>>(body);
+            var customer = _customerService.GetCustomer(id);
+            if (customer == null)
+                return NotFound();
 
-                if (data == null || !data.ContainsKey("CustomerId"))
-                {
-                    return BadRequest("Customer ID is required.");
-                }
-
-                int customerId = data["CustomerId"];
-                var customer = _unitOfWork.Customers.Get(customerId);
-
-                if (customer == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(customer);
-            }
+            return Ok(customer);
         }
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateCustomer()
+
+        [HttpPost]
+        public IActionResult CreateCustomer(Customer customer)
         {
-            using (var reader = new StreamReader(Request.Body))
-            {
-                var body = await reader.ReadToEndAsync();
-                var customer = JsonConvert.DeserializeObject<Customer>(body);
-
-                if (customer == null || string.IsNullOrEmpty(customer.Name))
-                {
-                    return BadRequest("Invalid customer data.");
-                }
-
-                _unitOfWork.Customers.Add(customer);
-                _unitOfWork.Complete();
-
-                return Created("", customer);
-            }
+            _customerService.CreateCustomer(customer);
+            return CreatedAtAction(nameof(GetCustomer), new { id = customer.CustomerId }, customer);
         }
-        [HttpPost("update")]
-        public async Task<IActionResult> UpdateCustomer()
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCustomer(int id, Customer customer)
         {
-            using (var reader = new StreamReader(Request.Body))
+            if (id != customer.CustomerId)
+                return BadRequest();
+
+            try
             {
-                var body = await reader.ReadToEndAsync();
-                var customer = JsonConvert.DeserializeObject<Customer>(body);
-
-                if (customer == null || customer.CustomerId == 0)
-                {
-                    return BadRequest("Invalid customer data.");
-                }
-
-                var existingCustomer = _unitOfWork.Customers.Get(customer.CustomerId);
-
-                if (existingCustomer == null)
-                {
-                    return NotFound();
-                }
-
-                existingCustomer.Name = customer.Name;
-                existingCustomer.Email = customer.Email;
-                existingCustomer.Phone = customer.Phone;
-                existingCustomer.Address = customer.Address;
-
-                _unitOfWork.Complete();
-
-                return NoContent();
+                _customerService.UpdateCustomer(customer);
             }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
-        [HttpPost("delete")]
-        public async Task<IActionResult> DeleteCustomer()
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCustomer(int id)
         {
-            using (var reader = new StreamReader(Request.Body))
+            try
             {
-                var body = await reader.ReadToEndAsync();
-                var data = JsonConvert.DeserializeObject<Dictionary<string, int>>(body);
-
-                if (data == null || !data.ContainsKey("CustomerId"))
-                {
-                    return BadRequest("Customer ID is required.");
-                }
-
-                int customerId = data["CustomerId"];
-                var customer = _unitOfWork.Customers.Get(customerId);
-
-                if (customer == null)
-                {
-                    return NotFound();
-                }
-
-                _unitOfWork.Customers.Remove(customer);
-                _unitOfWork.Complete();
-
-                return NoContent();
+                _customerService.DeleteCustomer(id);
             }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
-        }
+    }
 }

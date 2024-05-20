@@ -16,6 +16,6 @@ namespace ProjectManagement.Core.UnitOfWorks
         IGenericRepository<ProjectNote> ProjectNotes { get; }
         IGenericRepository<ProjectFile> ProjectFiles { get; }
 
-        int Complete();  // Değişiklikleri kaydetmek için
+        int Complete();  
     }
 }
